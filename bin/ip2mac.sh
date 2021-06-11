@@ -9,11 +9,12 @@ if [ -z "$IP" ];then
 fi
 
 MAC_ADDRESS_REGEX="\([0-9a-f]\{2\}:\)\{5\}[0-9a-f]\{2\}"
+TIMEOUT=0.1s
 
-TTL_LINE=$(ping -c 1 -W 1 $IP | grep ttl)
+TTL_LINE=$(timeout $TIMEOUT ping -c 1 -W 0 $IP | grep ttl)
 
 if [ -z "$TTL_LINE" ];then
-	echo "0"
+	exit 0
 else
 	MAC_ADDRESS=$(arp $IP | grep -o "$MAC_ADDRESS_REGEX")
 	echo "$MAC_ADDRESS"
